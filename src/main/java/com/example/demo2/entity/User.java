@@ -1,5 +1,6 @@
 package com.example.demo2.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "user_tbl")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,4 +42,8 @@ public class User {
 
     @OneToMany(mappedBy = "author")
     private Set<Article> articles;
+
+    @ManyToMany(mappedBy = "usersFavorite", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Article> articlesFavorite;
 }

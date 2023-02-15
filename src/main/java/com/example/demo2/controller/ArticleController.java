@@ -27,4 +27,14 @@ public class ArticleController {
         return articleService.getArticleBySlug(slug);
     }
 
+    @PostMapping("/{slug}/favorite")
+    public Map<String, ArticleDTOResponse> favoriteArticle(@PathVariable("slug") String slug) throws CustomNotFoundException {
+        return articleService.favoriteArticle(slug);
+    }
+
+    @DeleteMapping("/{slug}/unfavorite")
+    public Map<String, ArticleDTOResponse> unfavoriteArticle(@PathVariable("slug") String slug) throws CustomNotFoundException {
+        return articleService.unfavoriteArticle(slug);
+    }
+
 }

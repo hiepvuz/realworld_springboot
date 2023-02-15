@@ -10,4 +10,8 @@ public interface ArticleService {
     Map<String, ArticleDTOResponse> create(Map<String, ArticleDTOCreate> articleDTOCreateMap);
 
     Map<String, ArticleDTOResponse> getArticleBySlug(String slug) throws CustomNotFoundException;
+
+    Map<String, ArticleDTOResponse> favoriteArticle(String slug) throws CustomNotFoundException;
+
+    Map<String, ArticleDTOResponse> unfavoriteArticle(String slug) throws CustomNotFoundException;
 }

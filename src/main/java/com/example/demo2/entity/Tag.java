@@ -1,5 +1,6 @@
 package com.example.demo2.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,5 +20,8 @@ public class Tag {
     private String tag;
 
     @ManyToMany(mappedBy = "tagList", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     Set<Article> articles;
+
+
 }

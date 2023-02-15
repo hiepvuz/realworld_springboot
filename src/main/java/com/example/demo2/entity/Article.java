@@ -1,6 +1,7 @@
 package com.example.demo2.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,6 +36,12 @@ public class Article {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="article_tag", joinColumns = @JoinColumn(name = "article_id")
             , inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @JsonIgnore
     private Set<Tag> tagList;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "article_favorite", joinColumns = @JoinColumn(name = "article_id")
+    ,inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
+    private Set<User> usersFavorite;
 }

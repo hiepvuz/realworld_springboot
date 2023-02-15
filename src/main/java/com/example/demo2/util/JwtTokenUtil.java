@@ -32,13 +32,13 @@ public class JwtTokenUtil {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(User user, Long expriredDate) {
+    public String generateToken(User user, Long expiredDate) {
         Map<String, Object> claims = new HashMap<>();
         TokenPayload tokenPayload = TokenPayload.builder().userId(user.getId()).email(user.getEmail()).build();
         claims.put("payload", tokenPayload);
 
         return Jwts.builder().setClaims(claims).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expriredDate * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + expiredDate * 1000))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 

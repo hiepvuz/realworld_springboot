@@ -10,13 +10,11 @@ import com.example.demo2.model.article.dto.ArticleDTOResponse;
 import com.example.demo2.model.article.mapper.ArticleMapper;
 import com.example.demo2.repository.ArticleRepository;
 import com.example.demo2.repository.TagRepository;
-import com.example.demo2.repository.UserRepository;
 import com.example.demo2.service.ArticleService;
 import com.example.demo2.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Wrapper;
 import java.util.*;
 
 @Service
@@ -38,31 +36,93 @@ public class ArticleServiceImpl implements ArticleService {
         article.setAuthor(userService.getLoggedInUser());
         article = articleRepository.save(article);
         Map<String, ArticleDTOResponse> wrapper = new HashMap<>();
-        wrapper.put("article", ArticleMapper.toArticleDTOResponse(article, false, 0, false));
+        wrapper.put("article", ArticleMapper.toArticleDTOResponse(article, false, false));
         return wrapper;
     }
 
     @Override
     public Map<String, ArticleDTOResponse> getArticleBySlug(String slug) throws CustomNotFoundException {
         Optional<Article> optionalArticle = articleRepository.findArticleBySlug(slug);
-        if(!optionalArticle.isPresent()){
+        User loggedInUser = userService.getLoggedInUser();
+        if (!optionalArticle.isPresent()) {
             throw new CustomNotFoundException(CustomError.builder().code("404").message("Not found article").build());
         }
-            User userLoggedIn = userService.getLoggedInUser();
-            User user = optionalArticle.get().getAuthor();
-            boolean isFollowing = false;
-            for (User u : user.getFollowers()) {
-                if (u.getId() == (userLoggedIn.getId())) {
-                    isFollowing = true;
-                    break;
-                }
+        Article article = optionalArticle.get();
+        User userLoggedIn = userService.getLoggedInUser();
+        User user = optionalArticle.get().getAuthor();
+        boolean isFollowing = false;
+        for (User u : user.getFollowers()) {
+            if (u.getId() == (userLoggedIn.getId())) {
+                isFollowing = true;
+                break;
             }
-            ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(optionalArticle.get(),
-                    false, 0, isFollowing);
+        }
+        boolean isFavorite = false;
+        Set<User> usersFavorite = article.getUsersFavorite();
+        for(User u : usersFavorite){
+            if (u.getId() == loggedInUser.getId()) {
+                isFavorite = true;
+                break;
+            }
+        }
+        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(article,
+                isFavorite, isFollowing);
 
         Map<String, ArticleDTOResponse> wrapper = new HashMap<>();
         wrapper.put("article", articleDTOResponse);
 
         return wrapper;
     }
+
+    @Override
+    public Map<String, ArticleDTOResponse> favoriteArticle(String slug) throws CustomNotFoundException {
+        User loggedInUser = userService.getLoggedInUser();
+        Optional<Article> optionalArticle = articleRepository.findArticleBySlug(slug);
+        if (!optionalArticle.isPresent()) {
+            throw new CustomNotFoundException(CustomError.builder().code("404").message("Article not found").build());
+        }
+        Article article = optionalArticle.get();
+        Set<User> favoritesUser = article.getUsersFavorite();
+        favoritesUser.add(loggedInUser);
+        User user = article.getAuthor();
+        article = articleRepository.save(article);
+        boolean isFollowing = false;
+        for (User u : user.getFollowers()) {
+            if (u.getId() == (loggedInUser.getId())) {
+                isFollowing = true;
+                break;
+            }
+        }
+        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(article,true, isFollowing);
+        Map<String, ArticleDTOResponse> wrapper = new HashMap<>();
+        wrapper.put("article",articleDTOResponse);
+        return wrapper;
+    }
+
+    @Override
+    public Map<String, ArticleDTOResponse> unfavoriteArticle(String slug) throws CustomNotFoundException {
+        User loggedInUser = userService.getLoggedInUser();
+        Optional<Article> optionalArticle = articleRepository.findArticleBySlug(slug);
+        if (!optionalArticle.isPresent()) {
+            throw new CustomNotFoundException(CustomError.builder().code("404").message("Article not found").build());
+        }
+        Article article = optionalArticle.get();
+        Set<User> favoritesUser = article.getUsersFavorite();
+        favoritesUser.remove(loggedInUser);
+        User user = article.getAuthor();
+        article = articleRepository.save(article);
+        boolean isFollowing = false;
+        for (User u : user.getFollowers()) {
+            if (u.getId() == (loggedInUser.getId())) {
+                isFollowing = true;
+                break;
+            }
+        }
+        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(article,false, isFollowing);
+        Map<String, ArticleDTOResponse> wrapper = new HashMap<>();
+        wrapper.put("article",articleDTOResponse);
+        return wrapper;
+    }
+
+
 }

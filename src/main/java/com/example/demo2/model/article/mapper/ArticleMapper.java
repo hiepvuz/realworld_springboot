@@ -12,13 +12,13 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 
 public class ArticleMapper {
-    public static ArticleDTOResponse toArticleDTOResponse(Article article, boolean isFavorite, int favoritesCount,
+    public static ArticleDTOResponse toArticleDTOResponse(Article article, boolean isFavorite,
                                                           boolean isFollowing) {
 
         return ArticleDTOResponse.builder().slug(article.getSlug()).title(article.getTitle())
                 .description(article.getDescription()).body(article.getBody()).tags(article.getTagList())
                 .createdAt(article.getCreatedAt()).updatedAt(article.getUpdatedAt()).isFavorite(isFavorite)
-                .favoritesCount(favoritesCount).tags(article.getTagList()).author(toAuthorDTOResponse(article.getAuthor(), isFollowing)).build();
+                .favoritesCount(article.getUsersFavorite().size()).tags(article.getTagList()).author(toAuthorDTOResponse(article.getAuthor(), isFollowing)).build();
     }
 
     private static AuthorDTOResponse toAuthorDTOResponse(User author, boolean isFollowing) {
