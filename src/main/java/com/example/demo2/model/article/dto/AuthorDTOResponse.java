@@ -1,16 +1,16 @@
-package com.example.demo2.model.user.dto;
+package com.example.demo2.model.article.dto;
 
 import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserDTOResponse {
-    private String email;
-    private String token;
+public class AuthorDTOResponse {
     private String username;
     private String bio;
     private String image;
+    private boolean following;
+
 }

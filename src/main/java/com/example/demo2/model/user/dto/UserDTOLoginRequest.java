@@ -1,9 +1,11 @@
 package com.example.demo2.model.user.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserDTOLoginRequest {
     private String email;

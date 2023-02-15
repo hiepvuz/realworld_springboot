@@ -1,10 +1,12 @@
 package com.example.demo2.model.profile.dto;
 
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ProfileDTOResponse {
     private String username;

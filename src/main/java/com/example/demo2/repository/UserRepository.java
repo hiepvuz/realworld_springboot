@@ -1,9 +1,7 @@
 package com.example.demo2.repository;
 
-import java.util.Map;
 import java.util.Optional;
 
-import com.example.demo2.model.profile.dto.ProfileDTOResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

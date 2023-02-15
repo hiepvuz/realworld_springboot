@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import io.jsonwebtoken.Claims;
-import lombok.experimental.Tolerate;
 import org.springframework.stereotype.Component;
 
 import com.example.demo2.entity.User;

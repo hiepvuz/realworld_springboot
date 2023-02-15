@@ -63,6 +63,7 @@ public class UserServiceImpl implements UserService {
         return buildUserDTOResponse(user);
     }
 
+    @Override
     public User getLoggedInUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 

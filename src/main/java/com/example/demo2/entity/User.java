@@ -1,8 +1,8 @@
 package com.example.demo2.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
@@ -10,8 +10,8 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_tbl")
 @Builder
+@Table(name = "user_tbl")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +38,7 @@ public class User {
 
     @ManyToMany(mappedBy = "followers")
     private Set<User> followings;
+
+    @OneToMany(mappedBy = "author")
+    private Set<Article> articles;
 }
