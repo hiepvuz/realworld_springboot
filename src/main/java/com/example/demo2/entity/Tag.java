@@ -17,11 +17,10 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String tag;
 
     @ManyToMany(mappedBy = "tagList", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     Set<Article> articles;
-
-
 }

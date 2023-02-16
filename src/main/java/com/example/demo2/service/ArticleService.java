@@ -14,4 +14,6 @@ public interface ArticleService {
     Map<String, ArticleDTOResponse> favoriteArticle(String slug) throws CustomNotFoundException;
 
     Map<String, ArticleDTOResponse> unfavoriteArticle(String slug) throws CustomNotFoundException;
+
+    Map<String, Object> getListArticle(String tag, String author, String favorite, Integer limit, Integer offset);
 }

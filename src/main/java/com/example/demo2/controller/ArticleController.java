@@ -18,7 +18,7 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping("")
-    public Map<String, ArticleDTOResponse> createArticle(@RequestBody Map<String,ArticleDTOCreate> articleDTOCreateMap){
+    public Map<String, ArticleDTOResponse> createArticle(@RequestBody Map<String, ArticleDTOCreate> articleDTOCreateMap) {
         return articleService.create(articleDTOCreateMap);
     }
 
@@ -32,9 +32,21 @@ public class ArticleController {
         return articleService.favoriteArticle(slug);
     }
 
-    @DeleteMapping("/{slug}/unfavorite")
+    @DeleteMapping("/{slug}/favorite")
     public Map<String, ArticleDTOResponse> unfavoriteArticle(@PathVariable("slug") String slug) throws CustomNotFoundException {
         return articleService.unfavoriteArticle(slug);
+    }
+
+    @GetMapping("")
+    public Map<String, Object> getListArticle
+            (@RequestParam(value = "tag", required = false) String tag,
+             @RequestParam(value = "author", required = false) String author,
+             @RequestParam(value = "favorite", required = false) String favorite,
+             @RequestParam(value = "limit", required = false) Integer limit,
+             @RequestParam(value = "offset", required = false) Integer offset) {
+
+        return articleService.getListArticle(tag,author,favorite,limit,offset);
+
     }
 
 }

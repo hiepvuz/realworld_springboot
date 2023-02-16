@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class ArticleServiceImpl implements ArticleService {
         Set<Tag> tagSet = new HashSet<>(tagList);
         Article article = ArticleMapper.toArticle(articleDTOCreate);
         article.setTagList(tagSet);
+        article.setUsersFavorite(new HashSet<>());
         article.setAuthor(userService.getLoggedInUser());
         article = articleRepository.save(article);
         Map<String, ArticleDTOResponse> wrapper = new HashMap<>();
@@ -59,7 +61,7 @@ public class ArticleServiceImpl implements ArticleService {
         }
         boolean isFavorite = false;
         Set<User> usersFavorite = article.getUsersFavorite();
-        for(User u : usersFavorite){
+        for (User u : usersFavorite) {
             if (u.getId() == loggedInUser.getId()) {
                 isFavorite = true;
                 break;
@@ -93,9 +95,9 @@ public class ArticleServiceImpl implements ArticleService {
                 break;
             }
         }
-        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(article,true, isFollowing);
+        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(article, true, isFollowing);
         Map<String, ArticleDTOResponse> wrapper = new HashMap<>();
-        wrapper.put("article",articleDTOResponse);
+        wrapper.put("article", articleDTOResponse);
         return wrapper;
     }
 
@@ -118,10 +120,45 @@ public class ArticleServiceImpl implements ArticleService {
                 break;
             }
         }
-        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(article,false, isFollowing);
+        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(article, false, isFollowing);
         Map<String, ArticleDTOResponse> wrapper = new HashMap<>();
-        wrapper.put("article",articleDTOResponse);
+        wrapper.put("article", articleDTOResponse);
         return wrapper;
+    }
+
+    @Override
+    public Map<String, Object> getListArticle(String tag, String author, String favorite,
+                                              Integer limit, Integer offset) {
+        User loggedInUser = userService.getLoggedInUser();
+        Map<String, Object> resultWrapper = articleRepository.getListArticle(tag, author, favorite, limit, offset);
+        List<Article> listArticles = (List<Article>) resultWrapper.get("listArticles");
+        long countArticle = (long) resultWrapper.get("totalArticle");
+
+        List<ArticleDTOResponse> listArticleDTOResponses = listArticles.stream()
+                .map(article -> {
+                    boolean isFollowing = false;
+                    boolean isFavorite = false;
+                    for (User u : article.getAuthor().getFollowers()) {
+                        if (u.getId() == (loggedInUser.getId())) {
+                            isFollowing = true;
+                            break;
+                        }
+                    }
+
+                    for (User u : article.getUsersFavorite()) {
+                        if (u.getId() == (loggedInUser.getId())) {
+                            isFavorite = true;
+                            break;
+                        }
+                    }
+                    return ArticleMapper.toArticleDTOResponse(article, isFavorite, isFollowing);
+                })
+                .collect(Collectors.toList());
+        Map<String, Object> wrapper = new HashMap<>();
+        wrapper.put("articles", listArticleDTOResponses);
+        wrapper.put("articlesCount", countArticle);
+        return wrapper;
+
     }
 
 
