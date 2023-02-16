@@ -72,6 +72,5 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
         resultWrapper.put("totalArticle", totalArticle);
 
         return resultWrapper;
-
     }
 }

@@ -3,12 +3,12 @@ package com.example.demo2.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import com.example.demo2.exception.custom.CustomBadRequestException;
 import com.example.demo2.exception.custom.CustomNotFoundException;
 import com.example.demo2.model.CustomError;
 import com.example.demo2.model.profile.dto.ProfileDTOResponse;
+import com.example.demo2.model.user.dto.UserDTOUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +23,7 @@ import com.example.demo2.model.user.mapper.UserMapper;
 import com.example.demo2.repository.UserRepository;
 import com.example.demo2.service.UserService;
 import com.example.demo2.util.JwtTokenUtil;
+import org.springframework.util.ObjectUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -66,12 +67,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getLoggedInUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         if (principal instanceof UserDetails) {
             String email = ((UserDetails) principal).getUsername();
             return userRepository.findByEmail(email).get();
         }
         return null;
+    }
+
+    @Override
+    public Map<String, User> update(Map<String, UserDTOUpdate> userDTOUpdateMap) throws CustomNotFoundException {
+        User loggedInUser = getLoggedInUser();
+        if (ObjectUtils.isEmpty(loggedInUser)) {
+            throw new CustomNotFoundException(CustomError.builder().code("401 ").message("Unauthorized").build());
+        }
+        UserDTOUpdate userDTOUpdate = userDTOUpdateMap.get("user");
+        Optional<User> optionalUser = userRepository.findByUsername(loggedInUser.getUsername());
+        User updateUser = optionalUser.get();
+        updateUser.setEmail(userDTOUpdate.getEmail());
+        updateUser.setPassword(passwordEncoder.encode(userDTOUpdate.getPassword()));
+        updateUser.setBio(userDTOUpdate.getBio());
+        updateUser.setImage(userDTOUpdate.getImage());
+        updateUser = userRepository.save(updateUser);
+        Map<String, User> wrapper = new HashMap<>();
+        wrapper.put("user", updateUser);
+        return wrapper;
     }
 
     @Override

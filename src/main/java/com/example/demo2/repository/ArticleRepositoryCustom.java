@@ -1,6 +1,7 @@
 package com.example.demo2.repository;
 
 
+
 import java.util.Map;
 
 public interface ArticleRepositoryCustom {

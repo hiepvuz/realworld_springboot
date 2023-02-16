@@ -9,6 +9,7 @@ import com.example.demo2.model.profile.dto.ProfileDTOResponse;
 import com.example.demo2.model.user.dto.UserDTOCreate;
 import com.example.demo2.model.user.dto.UserDTOLoginRequest;
 import com.example.demo2.model.user.dto.UserDTOResponse;
+import com.example.demo2.model.user.dto.UserDTOUpdate;
 
 public interface UserService {
 
@@ -25,4 +26,6 @@ public interface UserService {
     Map<String, ProfileDTOResponse> unfollow(String username) throws CustomNotFoundException;
 
     User getLoggedInUser();
+
+    Map<String, User> update(Map<String, UserDTOUpdate> userDTOUpdateMap) throws CustomNotFoundException;
 }
