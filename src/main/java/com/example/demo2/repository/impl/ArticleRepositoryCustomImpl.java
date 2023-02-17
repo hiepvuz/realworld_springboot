@@ -54,14 +54,10 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 
         if (!ObjectUtils.isEmpty(offset)) {
             typedQuery.setFirstResult(offset);
-        } else {
-            typedQuery.setFirstResult(0);
         }
 
         if (!ObjectUtils.isEmpty(limit)) {
             typedQuery.setMaxResults(limit);
-        } else {
-            typedQuery.setMaxResults(20);
         }
 
         long totalArticle = (long) countQuery.getSingleResult();

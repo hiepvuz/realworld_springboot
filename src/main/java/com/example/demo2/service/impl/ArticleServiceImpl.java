@@ -11,7 +11,6 @@ import com.example.demo2.model.article.dto.ArticleDTOUpdate;
 import com.example.demo2.model.article.mapper.ArticleMapper;
 import com.example.demo2.repository.ArticleRepository;
 import com.example.demo2.repository.TagRepository;
-import com.example.demo2.repository.UserRepository;
 import com.example.demo2.service.ArticleService;
 import com.example.demo2.service.UserService;
 import com.example.demo2.util.SlugUtil;
@@ -160,7 +159,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Map<String, Object> getFeed() {
-        List<Article> articles = articleRepository.getFeed();
+        User loggedInUser = userService.getLoggedInUser();
+        List<Article> articles = articleRepository.getFeed(loggedInUser.getId());
 
         List<ArticleDTOResponse> listArticleDTOResponses = articles.stream()
                 .map(article -> ArticleMapper.toArticleDTOResponse(article, isFavorite(article), isFollowing(article)))

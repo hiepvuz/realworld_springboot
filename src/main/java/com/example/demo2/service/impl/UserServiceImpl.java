@@ -82,6 +82,9 @@ public class UserServiceImpl implements UserService {
         }
         UserDTOUpdate userDTOUpdate = userDTOUpdateMap.get("user");
         Optional<User> optionalUser = userRepository.findByUsername(loggedInUser.getUsername());
+        if(!optionalUser.isPresent()){
+            throw new CustomNotFoundException(CustomError.builder().code("404").message("User not exist").build());
+        }
         User updateUser = optionalUser.get();
         updateUser.setEmail(userDTOUpdate.getEmail());
         updateUser.setPassword(passwordEncoder.encode(userDTOUpdate.getPassword()));
@@ -151,7 +154,7 @@ public class UserServiceImpl implements UserService {
     public Map<String, UserDTOResponse> buildUserDTOResponse(User user) {
         Map<String, UserDTOResponse> wrapper = new HashMap<>();
         UserDTOResponse userDTOResponse = UserMapper.toUserDTOResponse(user);
-        userDTOResponse.setToken(jwtTokenUtil.generateToken(user, 10000L));
+        userDTOResponse.setToken(jwtTokenUtil.generateToken(user, 24L * 60 * 60));
         wrapper.put("user", userDTOResponse);
         return wrapper;
     }

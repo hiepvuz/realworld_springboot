@@ -57,14 +57,14 @@ public class ArticleController {
             (@RequestParam(value = "tag", required = false) String tag,
              @RequestParam(value = "author", required = false) String author,
              @RequestParam(value = "favorite", required = false) String favorite,
-             @RequestParam(value = "limit", required = false) Integer limit,
-             @RequestParam(value = "offset", required = false) Integer offset) {
+             @RequestParam(value = "limit", defaultValue = "20") Integer limit,
+             @RequestParam(value = "offset", defaultValue = "0") Integer offset) {
 
         return articleService.getListArticle(tag, author, favorite, limit, offset);
     }
 
     @GetMapping("/feed")
-    public Map<String,Object> getFeed(){
+    public Map<String, Object> getFeed() {
         return articleService.getFeed();
     }
 }

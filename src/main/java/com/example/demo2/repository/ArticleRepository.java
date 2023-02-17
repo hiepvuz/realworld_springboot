@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ArticleRepository extends JpaRepository<Article, Integer>, ArticleRepositoryCustom {
     Optional<Article> findArticleBySlug(String slug);
 
-    @Query(value = "SELECT * FROM Article a JOIN users u ON a.author_id = u.id JOIN user_follow uf ON a.author_id = uf.user_id WHERE uf.follower_id = 1"
-            ,nativeQuery = true)
-    List<Article> getFeed();
+    @Query(value = "SELECT * FROM Article a JOIN users u ON a.author_id = u.id " +
+            "JOIN user_follow uf ON a.author_id = uf.user_id WHERE uf.follower_id = ?1", nativeQuery = true)
+    List<Article> getFeed(Integer loggedInUser);
 }

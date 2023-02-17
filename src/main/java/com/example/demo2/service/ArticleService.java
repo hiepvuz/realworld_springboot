@@ -21,7 +21,5 @@ public interface ArticleService {
 
     Map<String, Article> update(String slug, Map<String, ArticleDTOUpdate> articleDTOUpdateMap) throws CustomNotFoundException;
 
-//    Map<String, Object> getFeed(String limit, String offset);
-
     Map<String, Object> getFeed();
 }
