@@ -41,7 +41,7 @@ class ArticleServiceImplTest {
     private UserService userService;
 
     @Test
-    void create() {
+    void create() throws CustomNotFoundException {
         //given
         User author = new User();
         author.setFollowers(new HashSet<>());

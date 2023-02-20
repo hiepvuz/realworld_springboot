@@ -21,7 +21,7 @@ public class ArticleMapper {
                 .favoritesCount(article.getUsersFavorite().size()).tags(article.getTagList()).author(toAuthorDTOResponse(article.getAuthor(), isFollowing)).build();
     }
 
-    private static AuthorDTOResponse toAuthorDTOResponse(User author, boolean isFollowing) {
+    public static AuthorDTOResponse toAuthorDTOResponse(User author, boolean isFollowing) {
         return AuthorDTOResponse.builder().username(author.getUsername()).bio(author.getBio()).image(author.getImage())
                 .following(isFollowing).build();
     }

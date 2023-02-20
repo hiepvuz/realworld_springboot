@@ -37,7 +37,8 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
 
     @Override
-    public Map<String, UserDTOResponse> authenticated(Map<String, UserDTOLoginRequest> userDTOLoginRequestMap) throws CustomBadRequestException {
+    public Map<String, UserDTOResponse> authenticated(Map<String, UserDTOLoginRequest> userDTOLoginRequestMap)
+            throws CustomBadRequestException {
         UserDTOLoginRequest userDTOLoginRequest = userDTOLoginRequestMap.get("user");
 
         Optional<User> optionalUser = userRepository.findByEmail(userDTOLoginRequest.getEmail());

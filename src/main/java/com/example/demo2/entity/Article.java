@@ -45,4 +45,7 @@ public class Article {
     ,inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     private Set<User> usersFavorite;
+
+    @OneToMany(mappedBy = "article")
+    Set<Comment> comments;
 }

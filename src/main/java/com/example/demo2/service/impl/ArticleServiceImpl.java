@@ -1,15 +1,17 @@
 package com.example.demo2.service.impl;
 
-import com.example.demo2.entity.Article;
-import com.example.demo2.entity.Tag;
-import com.example.demo2.entity.User;
+import com.example.demo2.entity.*;
 import com.example.demo2.exception.custom.CustomNotFoundException;
 import com.example.demo2.model.CustomError;
 import com.example.demo2.model.article.dto.ArticleDTOCreate;
 import com.example.demo2.model.article.dto.ArticleDTOResponse;
 import com.example.demo2.model.article.dto.ArticleDTOUpdate;
 import com.example.demo2.model.article.mapper.ArticleMapper;
+import com.example.demo2.model.comment.dto.CommentDTOCreate;
+import com.example.demo2.model.comment.dto.CommentDTOResponse;
+import com.example.demo2.model.comment.dto.mapper.CommentMapper;
 import com.example.demo2.repository.ArticleRepository;
+import com.example.demo2.repository.CommentRepository;
 import com.example.demo2.repository.TagRepository;
 import com.example.demo2.service.ArticleService;
 import com.example.demo2.service.UserService;
@@ -27,10 +29,15 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
     private final UserService userService;
     private final TagRepository tagRepository;
+    private final CommentRepository commentRepository;
 
     @Override
-    public Map<String, ArticleDTOResponse> create(Map<String, ArticleDTOCreate> articleDTOCreateMap) {
+    public Map<String, ArticleDTOResponse> create(Map<String, ArticleDTOCreate> articleDTOCreateMap)
+            throws CustomNotFoundException {
         ArticleDTOCreate articleDTOCreate = articleDTOCreateMap.get("article");
+        if (articleDTOCreate == null) {
+            throw new CustomNotFoundException(CustomError.builder().code("400").message("Request body is empty").build());
+        }
         List<Tag> tagList = tagRepository.findByIdIn(articleDTOCreate.getTagList());
         System.out.println(tagList.size());
         Set<Tag> tagSet = new HashSet<>(tagList);
@@ -97,7 +104,8 @@ public class ArticleServiceImpl implements ArticleService {
         favoritesUser.add(loggedInUser);
         article = articleRepository.save(article);
 
-        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(article, true, isFollowing(article));
+        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse
+                (article, true, isFollowing(article));
         Map<String, ArticleDTOResponse> wrapper = new HashMap<>();
         wrapper.put("article", articleDTOResponse);
         return wrapper;
@@ -115,7 +123,8 @@ public class ArticleServiceImpl implements ArticleService {
         favoritesUser.remove(loggedInUser);
         article = articleRepository.save(article);
 
-        ArticleDTOResponse articleDTOResponse = ArticleMapper.toArticleDTOResponse(article, false, isFollowing(article));
+        ArticleDTOResponse articleDTOResponse = ArticleMapper
+                .toArticleDTOResponse(article, false, isFollowing(article));
         Map<String, ArticleDTOResponse> wrapper = new HashMap<>();
         wrapper.put("article", articleDTOResponse);
         return wrapper;
@@ -138,7 +147,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Map<String, Article> update(String slug, Map<String, ArticleDTOUpdate> articleDTOUpdateMap) throws CustomNotFoundException {
+    public Map<String, Article> update(String slug, Map<String, ArticleDTOUpdate> articleDTOUpdateMap)
+            throws CustomNotFoundException {
         Optional<Article> optionalArticle = articleRepository.findArticleBySlug(slug);
         ArticleDTOUpdate articleDTOUpdate = articleDTOUpdateMap.get("article");
         if (!optionalArticle.isPresent()) {
@@ -168,6 +178,46 @@ public class ArticleServiceImpl implements ArticleService {
 
         Map<String, Object> wrapper = new HashMap<>();
         wrapper.put("articles", listArticleDTOResponses);
+        return wrapper;
+    }
+
+    @Override
+    public Map<String, CommentDTOResponse> addComment(String slug, Map<String, CommentDTOCreate> commentDTOCreateMap)
+            throws CustomNotFoundException {
+        User loggedInUser = userService.getLoggedInUser();
+        Optional<Article> optionalArticle = articleRepository.findArticleBySlug(slug);
+        if (!optionalArticle.isPresent()) {
+            throw new CustomNotFoundException(CustomError.builder().code("404").message("Not found article").build());
+        }
+        Article article = optionalArticle.get();
+        CommentDTOCreate commentDTOCreate = commentDTOCreateMap.get("comment");
+        if (commentDTOCreate == null) {
+            throw new CustomNotFoundException(CustomError.builder().code("400").message("Request body is empty").build());
+        }
+        Comment comment = CommentMapper.toComment(commentDTOCreate);
+        comment.setAuthor(loggedInUser);
+        article.getComments().add(comment);
+        comment.setArticle(article);
+        comment = commentRepository.save(comment);
+        CommentDTOResponse commentDTOResponse = CommentMapper.toCommentDTOResponse(comment, isFollowing(article));
+        Map<String, CommentDTOResponse> wrapper = new HashMap<>();
+        wrapper.put("comment", commentDTOResponse);
+        return wrapper;
+    }
+
+    @Override
+    public Map<String, Object> getComment(String slug) throws CustomNotFoundException {
+        Optional<Article> optionalArticle = articleRepository.findArticleBySlug(slug);
+        if (!optionalArticle.isPresent()) {
+            throw new CustomNotFoundException(CustomError.builder().code("404").message("Not found article").build());
+        }
+        Article article = optionalArticle.get();
+        List<Comment> comments = commentRepository.findByArticleId(article.getId());
+        List<CommentDTOResponse> listArticleDTOResponses = comments.stream()
+                .map(comment -> CommentMapper.toCommentDTOResponse(comment, isFollowing(article)))
+                .collect(Collectors.toList());
+        Map<String, Object> wrapper = new HashMap<>();
+        wrapper.put("comments", listArticleDTOResponses);
         return wrapper;
     }
 

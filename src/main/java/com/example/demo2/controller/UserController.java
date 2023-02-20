@@ -25,7 +25,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(value = "/users/login")
-    public Map<String, UserDTOResponse> login(@RequestBody Map<String, UserDTOLoginRequest> userDTOLoginRequestMap) throws CustomBadRequestException {
+    public Map<String, UserDTOResponse> login(@RequestBody Map<String, UserDTOLoginRequest> userDTOLoginRequestMap)
+            throws CustomBadRequestException {
         return userService.authenticated(userDTOLoginRequestMap);
     }
 
@@ -40,7 +41,8 @@ public class UserController {
     }
 
     @PutMapping("/user")
-    public Map<String, User> updateUser(@RequestBody Map<String, UserDTOUpdate> userDTOUpdateMap) throws CustomNotFoundException {
+    public Map<String, User> updateUser(@RequestBody Map<String, UserDTOUpdate> userDTOUpdateMap)
+            throws CustomNotFoundException {
         return userService.update(userDTOUpdateMap);
     }
 

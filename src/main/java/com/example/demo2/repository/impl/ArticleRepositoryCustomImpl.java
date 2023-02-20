@@ -18,7 +18,8 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public Map<String, Object> getListArticle(String tag, String author, String favorite, Integer limit, Integer offset) {
+    public Map<String, Object> getListArticle(String tag, String author, String favorite,
+                                              Integer limit, Integer offset) {
         StringBuilder query = new StringBuilder("select DISTINCT a from Article a left join a.author au " +
                 " left join a.tagList atl left join a.usersFavorite auf where 1=1");
 

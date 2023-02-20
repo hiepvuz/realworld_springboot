@@ -46,4 +46,7 @@ public class User {
     @ManyToMany(mappedBy = "usersFavorite", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Article> articlesFavorite;
+
+    @OneToMany(mappedBy = "author")
+    private Set<Comment> comments;
 }

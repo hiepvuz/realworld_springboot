@@ -6,11 +6,14 @@ import com.example.demo2.exception.custom.CustomNotFoundException;
 import com.example.demo2.model.article.dto.ArticleDTOCreate;
 import com.example.demo2.model.article.dto.ArticleDTOResponse;
 import com.example.demo2.model.article.dto.ArticleDTOUpdate;
+import com.example.demo2.model.comment.dto.CommentDTOCreate;
+import com.example.demo2.model.comment.dto.CommentDTOResponse;
 import com.example.demo2.repository.ArticleRepository;
 import com.example.demo2.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,7 +26,7 @@ public class ArticleController {
 
     @PostMapping("")
     public Map<String, ArticleDTOResponse> createArticle
-            (@RequestBody Map<String, ArticleDTOCreate> articleDTOCreateMap) {
+            (@RequestBody Map<String, ArticleDTOCreate> articleDTOCreateMap) throws CustomNotFoundException {
         return articleService.create(articleDTOCreateMap);
     }
 
@@ -66,5 +69,17 @@ public class ArticleController {
     @GetMapping("/feed")
     public Map<String, Object> getFeed() {
         return articleService.getFeed();
+    }
+
+    @PostMapping("/{slug}/comments")
+    public Map<String, CommentDTOResponse> addComment
+            (@PathVariable String slug,
+             @RequestBody Map<String, CommentDTOCreate> commentDTOCreateMap) throws CustomNotFoundException {
+        return articleService.addComment(slug, commentDTOCreateMap);
+    }
+
+    @GetMapping("/{slug}/comments")
+    public Map<String, Object> getComment (@PathVariable String slug) throws CustomNotFoundException {
+        return articleService.getComment(slug);
     }
 }
