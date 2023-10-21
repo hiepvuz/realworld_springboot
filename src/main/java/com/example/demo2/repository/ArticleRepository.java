@@ -11,7 +11,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface ArticleRepository extends JpaRepository<Article, Integer>, ArticleRepositoryCustom {
+public interface ArticleRepository extends JpaRepository<Article, Long>, ArticleRepositoryCustom {
     Optional<Article> findArticleBySlug(String slug);
 
     @Query(value = "SELECT * FROM Article a JOIN users u ON a.author_id = u.id " +

@@ -17,6 +17,8 @@ import com.example.demo2.service.ArticleService;
 import com.example.demo2.service.UserService;
 import com.example.demo2.util.SlugUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@EnableCaching
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
@@ -32,6 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final CommentRepository commentRepository;
 
     @Override
+    @Cacheable(value = "articlesCache")
     public Map<String, ArticleDTOResponse> create(Map<String, ArticleDTOCreate> articleDTOCreateMap)
             throws CustomNotFoundException {
         ArticleDTOCreate articleDTOCreate = articleDTOCreateMap.get("article");
@@ -52,6 +56,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Cacheable(value = "articlesCache")
     public Map<String, ArticleDTOResponse> getArticleBySlug(String slug) throws CustomNotFoundException {
         Optional<Article> optionalArticle = articleRepository.findArticleBySlug(slug);
         if (!optionalArticle.isPresent()) {
@@ -93,6 +98,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Cacheable(value = "articlesCache")
     public Map<String, ArticleDTOResponse> favoriteArticle(String slug) throws CustomNotFoundException {
         User loggedInUser = userService.getLoggedInUser();
         Optional<Article> optionalArticle = articleRepository.findArticleBySlug(slug);
@@ -131,6 +137,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Cacheable(value = "articlesCache")
     public Map<String, Object> getListArticle(String tag, String author, String favorite,
                                               Integer limit, Integer offset) {
         Map<String, Object> resultWrapper = articleRepository.getListArticle(tag, author, favorite, limit, offset);
@@ -168,6 +175,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Cacheable(value = "articlesCache")
     public Map<String, Object> getFeed() {
         User loggedInUser = userService.getLoggedInUser();
         List<Article> articles = articleRepository.getFeed(loggedInUser.getId());
@@ -206,6 +214,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Cacheable(value = "articlesCache")
     public Map<String, Object> getComment(String slug) throws CustomNotFoundException {
         Optional<Article> optionalArticle = articleRepository.findArticleBySlug(slug);
         if (!optionalArticle.isPresent()) {

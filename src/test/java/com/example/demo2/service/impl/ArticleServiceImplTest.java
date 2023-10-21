@@ -41,7 +41,7 @@ class ArticleServiceImplTest {
     private UserService userService;
 
     @Test
-    void create() throws CustomNotFoundException {
+    void create() {
         //given
         User author = new User();
         author.setFollowers(new HashSet<>());
@@ -52,7 +52,7 @@ class ArticleServiceImplTest {
         articleDTOCreateMap.put("article", articleDTOCreate);
         Map<String, ArticleDTOResponse> expected = new HashMap<>();
         ArticleDTOResponse articleDTOResponseExpected = ArticleDTOResponse.builder().slug("valid-slug").title("Unit test article title")
-                .description("UnitTest article description").body("Unit Test article body").tags(new HashSet<>())
+                .description("UnitTest article description").body("Unit Test article body")
                 .createdAt(new Date()).updatedAt(new Date()).isFavorite(false).favoritesCount(0)
                 .author(new AuthorDTOResponse("usernameAuthor", "bioAuthor", "imageAuthor", false)).build();
         expected.put("article", articleDTOResponseExpected);
@@ -80,7 +80,6 @@ class ArticleServiceImplTest {
         assertEquals(expected.get("article").getAuthor(), articleDTOResponse.getAuthor());
         assertEquals(expected.get("article").getCreatedAt(), articleDTOResponse.getCreatedAt());
         assertEquals(expected.get("article").getUpdatedAt(), articleDTOResponse.getUpdatedAt());
-        assertEquals(expected.get("article").getTags(), articleDTOResponse.getTags());
         assertEquals(expected.get("article").getFavoritesCount(), articleDTOResponse.getFavoritesCount());
         assertEquals(expected.get("article").isFavorite(), articleDTOResponse.isFavorite());
     }

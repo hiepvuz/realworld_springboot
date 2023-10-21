@@ -16,9 +16,9 @@ public class ArticleMapper {
                                                           boolean isFollowing) {
 
         return ArticleDTOResponse.builder().slug(article.getSlug()).title(article.getTitle())
-                .description(article.getDescription()).body(article.getBody()).tags(article.getTagList())
+                .description(article.getDescription()).body(article.getBody())
                 .createdAt(article.getCreatedAt()).updatedAt(article.getUpdatedAt()).isFavorite(isFavorite)
-                .favoritesCount(article.getUsersFavorite().size()).tags(article.getTagList()).author(toAuthorDTOResponse(article.getAuthor(), isFollowing)).build();
+                .favoritesCount(article.getUsersFavorite().size()).author(toAuthorDTOResponse(article.getAuthor(), isFollowing)).build();
     }
 
     public static AuthorDTOResponse toAuthorDTOResponse(User author, boolean isFollowing) {

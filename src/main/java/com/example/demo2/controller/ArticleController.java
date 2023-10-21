@@ -70,13 +70,13 @@ public class ArticleController {
     public Map<String, Object> getFeed() {
         return articleService.getFeed();
     }
-
-    @PostMapping("/{slug}/comments")
-    public Map<String, CommentDTOResponse> addComment
-            (@PathVariable String slug,
-             @RequestBody Map<String, CommentDTOCreate> commentDTOCreateMap) throws CustomNotFoundException {
-        return articleService.addComment(slug, commentDTOCreateMap);
-    }
+//
+//    @PostMapping("/{slug}/comments")
+//    public Map<String, CommentDTOResponse> addComment
+//            (@PathVariable String slug,
+//             @RequestBody Map<String, CommentDTOCreate> commentDTOCreateMap) throws CustomNotFoundException {
+//        return articleService.addComment(slug, commentDTOCreateMap);
+//    }
 
     @GetMapping("/{slug}/comments")
     public Map<String, Object> getComment (@PathVariable String slug) throws CustomNotFoundException {

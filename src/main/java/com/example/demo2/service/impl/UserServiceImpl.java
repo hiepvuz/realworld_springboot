@@ -10,6 +10,7 @@ import com.example.demo2.model.CustomError;
 import com.example.demo2.model.profile.dto.ProfileDTOResponse;
 import com.example.demo2.model.user.dto.UserDTOUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -66,6 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "userCache")
     public User getLoggedInUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -108,6 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "userCache")
     public Map<String, ProfileDTOResponse> getProfile(String userName) throws CustomNotFoundException {
         User userLoggedIn = getLoggedInUser();
         Optional<User> optionalUser = userRepository.findByUsername(userName);

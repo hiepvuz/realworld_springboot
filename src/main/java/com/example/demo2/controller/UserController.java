@@ -45,7 +45,4 @@ public class UserController {
             throws CustomNotFoundException {
         return userService.update(userDTOUpdateMap);
     }
-
-
-
 }
